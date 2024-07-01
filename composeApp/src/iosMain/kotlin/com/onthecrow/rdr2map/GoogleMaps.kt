@@ -16,6 +16,7 @@ import cocoapods.GoogleMaps.kGMSTypeNone
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.CoreGraphics.CGRectMake
 import platform.CoreLocation.CLLocationCoordinate2DMake
+import platform.UIKit.UIColor
 import platform.UIKit.UIImage
 import platform.UIKit.UIImageView
 import platform.UIKit.UIView
@@ -48,6 +49,7 @@ actual fun GoogleMapsComposable(
         factory = {
             val options = GMSMapViewOptions()
             options.camera = cameraWithLatitude(38.737798, -9.197043, zoom = 4f)
+            options.backgroundColor = UIColor(red = .8118, green = .7215, blue = .5843, alpha = 1.0)
             GMSMapView(options = options).apply {
                 val mapView = this@apply
                 delegate = delegateDelegate
