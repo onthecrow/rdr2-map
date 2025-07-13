@@ -47,7 +47,6 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
-            implementation(compose.components.resources)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
@@ -64,7 +63,7 @@ kotlin {
 
 android {
     namespace = "com.onthecrow.rdr2map"
-    compileSdk = 34
+    compileSdk = 36
 
     sourceSets["main"].resources.srcDirs("src/commonMain/composeResources")
 

@@ -1,11 +1,13 @@
 package com.onthecrow.rdr2map
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.Modifier
+import com.onthecrow.rdr2map.ui.map.GoogleMapsComposable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -31,22 +33,23 @@ class Location(
     val longitudeDouble by lazy(LazyThreadSafetyMode.NONE) { longitude?.toDoubleOrNull() ?: 0.0 }
 }
 
-const val KEY = "key1"
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
         val mapData: MutableState<MapData?> = mutableStateOf(null)
-        LaunchedEffect(KEY) {
+        LaunchedEffect(Unit) {
             mapData.value = Json { ignoreUnknownKeys = true }.decodeFromString<MapData>(Res.readBytes("files/map_data.json").decodeToString())
             println("Locations: ${mapData.value!!.locations.size}")
         }
-        val textMeasurer = rememberTextMeasurer()
         GoogleMapsComposable(
+            modifier = Modifier.fillMaxSize(),
             tileProvider = CustomTileProvider,
             mapData = mapData,
-            infoWindowProvider = CustomInfoWindowProviderImpl(textMeasurer),
+            onMarkerClick = { println("Marker clicked: $it") },
+            onMapClick = { println("Map clicked") },
+            markerIconProvider = MarkerIconProviderImpl,
         )
     }
 }
