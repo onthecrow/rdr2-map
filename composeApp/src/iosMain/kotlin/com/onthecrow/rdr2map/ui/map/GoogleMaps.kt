@@ -1,5 +1,6 @@
 package com.onthecrow.rdr2map.ui.map
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -12,7 +13,7 @@ import cocoapods.GoogleMaps.GMSMapViewOptions
 import cocoapods.GoogleMaps.kGMSTypeNone
 import com.onthecrow.rdr2map.MapData
 import com.onthecrow.rdr2map.MarkerIconProvider
-import com.onthecrow.rdr2map.TileProvider
+import com.onthecrow.rdr2map.TileProviderInternal
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.UIKit.UIColor
 
@@ -21,7 +22,8 @@ import platform.UIKit.UIColor
 @Composable
 actual fun GoogleMapsComposable(
     modifier: Modifier,
-    tileProvider: TileProvider,
+    contentPadding: PaddingValues,
+    tileProviderInternal: TileProviderInternal,
     mapData: MutableState<MapData?>,
     onMarkerClick: (locationId: Int) -> Unit,
     onMapClick: () -> Unit,
@@ -30,7 +32,7 @@ actual fun GoogleMapsComposable(
     val mapDelegate = remember(onMarkerClick, onMapClick) {
         MapDelegate(onMarkerClick, onMapClick)
     }
-    val tileLayer = remember(tileProvider) { TileLayer(tileProvider) }
+    val tileLayer = remember(tileProviderInternal) { TileLayer(tileProviderInternal) }
     val markerHolder = remember(mapData.value?.locations, markerIconProvider) {
         MarkerHolder(mapData.value?.locations ?: emptyList(), markerIconProvider)
     }

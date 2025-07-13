@@ -4,12 +4,12 @@ import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import rdr2_map.composeapp.generated.resources.Res
 
-interface TileProvider {
+interface TileProviderInternal {
     fun getTile(z: Int, x: Int, y: Int): ByteArray?
 }
 
 @OptIn(ExperimentalResourceApi::class)
-internal object CustomTileProvider: TileProvider {
+internal object TileProviderInternalImpl: TileProviderInternal {
     override fun getTile(z: Int, x: Int, y: Int): ByteArray? {
         return runBlocking {
             return@runBlocking try {

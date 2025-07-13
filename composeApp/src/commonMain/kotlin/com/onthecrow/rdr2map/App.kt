@@ -1,12 +1,27 @@
 package com.onthecrow.rdr2map
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.onthecrow.rdr2map.ui.map.GoogleMapsComposable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -43,13 +58,37 @@ fun App() {
             mapData.value = Json { ignoreUnknownKeys = true }.decodeFromString<MapData>(Res.readBytes("files/map_data.json").decodeToString())
             println("Locations: ${mapData.value!!.locations.size}")
         }
-        GoogleMapsComposable(
-            modifier = Modifier.fillMaxSize(),
-            tileProvider = CustomTileProvider,
-            mapData = mapData,
-            onMarkerClick = { println("Marker clicked: $it") },
-            onMapClick = { println("Map clicked") },
-            markerIconProvider = MarkerIconProviderImpl,
-        )
+        Scaffold(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                val isSelected = remember { mutableStateOf(false) }
+                GoogleMapsComposable(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = WindowInsets.safeDrawing.asPaddingValues(),
+                    tileProviderInternal = TileProviderInternalImpl,
+                    mapData = mapData,
+                    onMarkerClick = {
+                        println("Marker clicked: $it")
+                        isSelected.value = true
+                                    },
+                    onMapClick = {
+                        println("Map clicked")
+                        isSelected.value = false
+                                 },
+                    markerIconProvider = MarkerIconProviderImpl,
+                )
+                if (isSelected.value) {
+                    Box(
+                        modifier = Modifier.padding(bottom = 50.dp).width(200.dp).height(50.dp)
+                            .align(Alignment.BottomCenter).clip(
+                            RoundedCornerShape(8.dp)
+                        ).background(
+                            Color.White
+                        )
+                    )
+                }
+            }
+        }
     }
 }
